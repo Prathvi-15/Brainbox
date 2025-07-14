@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Editor Dashboard</title>
+</head>
+<body>
+    <h1>Editor Dashboard</h1>
+    <p>Welcome, Editor!</p>
+    <a th:href="@{/logout}">Logout</a>
+
+    <h2>All Articles</h2>
+    <table border="1">
+        <tr>
+            <th>Title</th>
+            <th>Approved</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="article : ${articles}">
+            <td th:text="${article.title}">Title</td>
+            <td th:text="${article.approved}">Approved</td>
+            <td>
+                <a th:href="@{'/editor/edit/' + ${article.id}}">Edit</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

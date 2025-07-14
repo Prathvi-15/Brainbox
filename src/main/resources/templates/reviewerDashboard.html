@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reviewer Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, Reviewer</h1>
+    <nav>
+        <a href="/reviewer/review">Pending Articles</a> |
+        <a href="/logout">Logout</a>
+    </nav>
+
+    <h2>Articles Pending Approval</h2>
+    <ul>
+        <th:block th:each="article : ${articles}">
+            <li>
+                <strong th:text="${article.title}"></strong>
+                by <em th:text="${article.author.username}"></em>
+                <form th:action="@{'/reviewer/approve/' + ${article.id}}" method="post" style="display:inline;">
+                    <button type="submit">Approve</button>
+                </form>
+            </li>
+        </th:block>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <p>Welcome, Admin!</p>
+    <a th:href="@{/logout}">Logout</a>
+
+    <h2>All Articles</h2>
+    <table border="1">
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Approved</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="article : ${articles}">
+            <td th:text="${article.title}">Title</td>
+            <td th:text="${article.user.username}">Author</td>
+            <td th:text="${article.approved}">Approved</td>
+            <td>
+                <a th:href="@{'/admin/edit/' + ${article.id}}">Edit</a>
+                <a th:href="@{'/admin/delete/' + ${article.id}}">Delete</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

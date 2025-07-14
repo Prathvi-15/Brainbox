@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contributor Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, Contributor</h1>
+    <nav>
+        <a href="/contributor/articles">My Articles</a> |
+        <a href="/articles/new">Add Article</a> |
+        <a href="/logout">Logout</a>
+    </nav>
+
+    <h2>Your Articles</h2>
+    <ul>
+        <th:block th:each="article : ${articles}">
+            <li>
+                <strong th:text="${article.title}"></strong>
+                <a th:href="@{'/articles/edit/' + ${article.id}}">Edit</a>
+            </li>
+        </th:block>
+    </ul>
+</body>
+</html>

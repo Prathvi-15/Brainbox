@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Viewer Dashboard</title>
+</head>
+<body>
+    <h1>Viewer Dashboard</h1>
+    <p>Welcome, Viewer!</p>
+    <a th:href="@{/logout}">Logout</a>
+
+    <h2>Approved Articles</h2>
+    <table border="1">
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+        </tr>
+        <tr th:each="article : ${articles}">
+            <td th:text="${article.title}">Article Title</td>
+            <td th:text="${article.author.username}">Author</td>
+        </tr>
+    </table>
+</body>
+</html>

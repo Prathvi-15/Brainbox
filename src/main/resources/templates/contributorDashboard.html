@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Contributor Dashboard</title>
+</head>
+<body>
+    <h1>Contributor Dashboard</h1>
+    <p>Welcome, Contributor!</p>
+    <a th:href="@{/logout}">Logout</a>
+
+    <h2>Your Articles</h2>
+    <a th:href="@{/contributor/add}">Add New Article</a>
+    <table border="1">
+        <tr>
+            <th>Title</th>
+            <th>Approved</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="article : ${articles}">
+            <td th:text="${article.title}">Title</td>
+            <td th:text="${article.approved}">Approved</td>
+            <td>
+                <a th:href="@{'/contributor/edit/' + ${article.id}}">Edit</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
