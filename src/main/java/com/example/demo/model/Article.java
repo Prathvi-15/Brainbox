@@ -13,7 +13,7 @@ public class Article {
     private String title;
     private String content;
 
-    private boolean approved = false; // ✅ Add this field
+    private boolean approved = false;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -28,7 +28,7 @@ public class Article {
         this.approved = false;
     }
 
-    // ✅ Getters and Setters
+    // Getters
     public Long getId() {
         return id;
     }
@@ -49,6 +49,7 @@ public class Article {
         return author;
     }
 
+    // Setters
     public void setId(Long id) {
         this.id = id;
     }

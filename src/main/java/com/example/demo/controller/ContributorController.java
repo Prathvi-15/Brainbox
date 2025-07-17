@@ -7,27 +7,70 @@ import com.example.demo.repository.UserRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
 
 @Controller
+@RequestMapping("/contributor")
 @PreAuthorize("hasRole('CONTRIBUTOR')")
 public class ContributorController {
-    private final UserRepository userRepo;
-    private final ArticleRepository articleRepo;
 
-    public ContributorController(UserRepository userRepo, ArticleRepository articleRepo) {
-        this.userRepo = userRepo;
+    private final ArticleRepository articleRepo;
+    private final UserRepository userRepo;
+
+    public ContributorController(ArticleRepository articleRepo, UserRepository userRepo) {
         this.articleRepo = articleRepo;
+        this.userRepo = userRepo;
     }
 
-    @GetMapping("/contributor/dashboard")
+    @GetMapping("/dashboard")
     public String contributorDashboard(Model model, Principal principal) {
-        User user = userRepo.findByUsername(principal.getName()).get();
-        List<Article> articles = articleRepo.findByAuthor(user);
-        model.addAttribute("articles", articles);
+        User contributor = userRepo.findByUsername(principal.getName()).orElse(null);
+
+        List<Article> drafts = articleRepo.findByAuthorAndApproved(contributor, false);
+        List<Article> published = articleRepo.findByApproved(true);
+
+        model.addAttribute("drafts", drafts);
+        model.addAttribute("published", published);
+        model.addAttribute("username", contributor.getUsername());
+
         return "contributorDashboard";
+    }
+
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("article", new Article());
+        return "contributorAddArticle";
+    }
+
+    @PostMapping("/add")
+    public String addArticle(@ModelAttribute Article article, Principal principal) {
+        User contributor = userRepo.findByUsername(principal.getName()).orElse(null);
+        article.setAuthor(contributor);
+        article.setApproved(false);
+        articleRepo.save(article);
+        return "redirect:/contributor/dashboard";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        articleRepo.findById(id).ifPresent(article -> model.addAttribute("article", article));
+        return "contributorEditArticle";
+    }
+
+    @PostMapping("/update")
+    public String updateArticle(@ModelAttribute Article updatedArticle, Principal principal) {
+        User contributor = userRepo.findByUsername(principal.getName()).orElse(null);
+
+        articleRepo.findById(updatedArticle.getId()).ifPresent(existing -> {
+            if (existing.getAuthor().getId().equals(contributor.getId())) {
+                existing.setTitle(updatedArticle.getTitle());
+                existing.setContent(updatedArticle.getContent());
+                articleRepo.save(existing);
+            }
+        });
+        return "redirect:/contributor/dashboard";
     }
 }

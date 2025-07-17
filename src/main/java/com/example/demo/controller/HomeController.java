@@ -7,28 +7,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-//    @GetMapping("/")
-//    public String home() {
-//        return "redirect:/login"; // Ensures clean redirection to login
-//    }
+    @GetMapping("/dashboard")
+    public String home(Authentication auth) {
+        String roles = auth.getAuthorities().toString();
 
-	@GetMapping("/dashboard")
-	public String dashboard(Authentication auth) {
-	    String roles = auth.getAuthorities().toString();
+        if (roles.contains("ROLE_ADMIN")) return "redirect:/admin/dashboard";
+        if (roles.contains("ROLE_CONTRIBUTOR")) return "redirect:/contributor/dashboard";
+        if (roles.contains("ROLE_REVIEWER")) return "redirect:/reviewer/dashboard";
+        if (roles.contains("ROLE_VIEWER")) return "redirect:/viewer/dashboard";
+        if (roles.contains("ROLE_EDITOR")) return "redirect:/editor/dashboard";
 
-	    if (roles.contains("ADMIN")) {
-	        return "adminDashboard";
-	    } else if (roles.contains("EDITOR")) {  // 🔼 Editor before Contributor
-	        return "editorDashboard";
-	    } else if (roles.contains("REVIEWER")) {
-	        return "reviewerDashboard";
-	    } else if (roles.contains("CONTRIBUTOR")) {
-	        return "contributorDashboard";
-	    } else if (roles.contains("VIEWER")) {
-	        return "viewerDashboard";
-	    }
+        return "redirect:/login";
+    }
 
-	    return "login";
-	}
-
+    @GetMapping("/")
+    public String root() {
+        return "redirect:/login";
+    }
 }

@@ -2,27 +2,118 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Contributor Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .dashboard-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+        }
+        .btn-add {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-add:hover {
+            background-color: #218838;
+        }
+        .btn-logout {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-logout:hover {
+            background-color: #c82333;
+        }
+        .section-title {
+            margin-top: 40px;
+            color: #343a40;
+            font-weight: 600;
+        }
+        table th {
+            background-color: #f1f3f5;
+        }
+        .username {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .top-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .text-muted {
+            font-size: 14px;
+        }
+        /* Shift edit button a bit left */
+        .actions-col {
+            padding-left: 1rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Contributor Dashboard</h1>
-    <p>Welcome, Contributor!</p>
-    <a th:href="@{/logout}">Logout</a>
 
-    <h2>Your Articles</h2>
-    <a th:href="@{/contributor/add}">Add New Article</a>
-    <table border="1">
-        <tr>
-            <th>Title</th>
-            <th>Approved</th>
-            <th>Actions</th>
-        </tr>
-        <tr th:each="article : ${articles}">
-            <td th:text="${article.title}">Title</td>
-            <td th:text="${article.approved}">Approved</td>
-            <td>
-                <a th:href="@{'/contributor/edit/' + ${article.id}}">Edit</a>
-            </td>
-        </tr>
-    </table>
+<div class="dashboard-container">
+    <h2 class="text-center mb-3">Contributor Dashboard</h2>
+    <p class="text-center">Welcome, <span class="username" th:text="${#authentication.name}">User</span>!</p>
+
+    <div class="top-actions">
+        <a th:href="@{/logout}" class="btn btn-logout">Logout</a>
+        <a th:href="@{/contributor/add}" class="btn btn-add">➕ Add New Article</a>
+    </div>
+
+    <div>
+        <h4 class="section-title">Your Drafts (Waiting for Approval)</h4>
+        <div th:if="${#lists.isEmpty(drafts)}" class="text-muted">
+            No drafts yet – hit the green button above to add one!
+        </div>
+        <table th:if="${!#lists.isEmpty(drafts)}"
+               class="table table-bordered align-middle mt-3">
+            <thead>
+                <tr>
+                    <th class="text-start">Title</th>
+                    <th class="actions-col text-start" style="width: 120px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="article : ${drafts}">
+                    <td class="text-start" th:text="${article.title}">Title</td>
+                    <td class="actions-col text-start">
+                        <a th:href="@{'/contributor/edit/' + ${article.id}}"
+                           class="btn btn-primary btn-sm">Edit</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h4 class="section-title">Published Articles</h4>
+        <div th:if="${#lists.isEmpty(published)}" class="text-muted">
+            You don’t have any published articles yet.
+        </div>
+        <table th:if="${!#lists.isEmpty(published)}"
+               class="table table-bordered align-middle mt-3">
+            <thead>
+                <tr>
+                    <th class="text-start">Title</th>
+                    <th class="text-start">Author</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="article : ${published}">
+                    <td class="text-start" th:text="${article.title}">Title</td>
+                    <td class="text-start" th:text="${article.author.username}">Author</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 </body>
 </html>

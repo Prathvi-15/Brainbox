@@ -13,6 +13,7 @@ import java.util.List;
 @RequestMapping("/reviewer")
 @PreAuthorize("hasRole('REVIEWER')")
 public class ReviewerController {
+
     private final ArticleRepository articleRepo;
 
     public ReviewerController(ArticleRepository articleRepo) {
@@ -21,16 +22,18 @@ public class ReviewerController {
 
     @GetMapping("/dashboard")
     public String reviewerDashboard(Model model) {
-        List<Article> pending = articleRepo.findByApprovedFalse();
-        model.addAttribute("articles", pending);
+        List<Article> pendingArticles = articleRepo.findByApprovedFalse();
+        model.addAttribute("articles", pendingArticles);
         return "reviewerDashboard";
     }
 
     @PostMapping("/approve/{id}")
-    public String approve(@PathVariable Long id) {
-        Article a = articleRepo.findById(id).get();
-        a.setApproved(true);
-        articleRepo.save(a);
+    public String approveArticle(@PathVariable Long id) {
+        Article article = articleRepo.findById(id).orElse(null);
+        if (article != null) {
+            article.setApproved(true);
+            articleRepo.save(article);
+        }
         return "redirect:/reviewer/dashboard";
     }
 }

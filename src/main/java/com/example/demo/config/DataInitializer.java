@@ -2,31 +2,31 @@ package com.example.demo.config;
 
 import com.example.demo.model.Role;
 import com.example.demo.repository.RoleRepository;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
+import jakarta.annotation.PostConstruct;
 
-@Configuration
+@Component
 public class DataInitializer {
 
-    @Bean
-    CommandLineRunner initRoles(RoleRepository roleRepository) {
-        return args -> {
-            List<String> roleNames = List.of("ADMIN", "EDITOR", "CONTRIBUTOR", "REVIEWER", "VIEWER");
+    @Autowired
+    private RoleRepository roleRepository;
 
-            for (String roleName : roleNames) {
-                // Only insert if it doesn't already exist
-                if (roleRepository.findByName(roleName).isEmpty()) {
-                    Role role = new Role();
-                    role.setName(roleName);
-                    roleRepository.save(role);
-                    System.out.println("Inserted role: " + roleName);
-                } else {
-                    System.out.println("Role already exists: " + roleName);
-                }
-            }
-        };
+    @PostConstruct
+    public void init() {
+        createRoleIfNotFound("ADMIN");
+        createRoleIfNotFound("CONTRIBUTOR");
+        createRoleIfNotFound("REVIEWER");
+        createRoleIfNotFound("VIEWER");
+        createRoleIfNotFound("EDITOR");
+    }
+
+    private void createRoleIfNotFound(String roleName) {
+        if (!roleRepository.existsByName(roleName)) {
+            Role role = new Role();
+            role.setName(roleName);
+            roleRepository.save(role);
+        }
     }
 }
