@@ -39,7 +39,7 @@ INSERT INTO user_roles (user_id, role_id) VALUES
   
   INSERT INTO user_roles (user_id, role_id) VALUES (7, 2);
   
-  SELECT * FROM user;
+SELECT * FROM user;
 SELECT * FROM role;
 SELECT * FROM user_roles;
 
